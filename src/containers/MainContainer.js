@@ -9,7 +9,12 @@
 import React, {Component} from 'react';
 import {Platform, StyleSheet, Text, View, Button} from 'react-native';
 import { connect } from 'react-redux'
-import { setLoading } from '../actions'
+import { 
+  setLoading,
+  setUser,
+  deleteUser
+} from '../actions'
+import { PURGE } from 'redux-persist'
 
 const instructions = Platform.select({
   ios: 'Press Cmd+R to reload,\n' + 'Cmd+D or shake for dev menu',
@@ -24,10 +29,16 @@ class MainContainer extends Component {
     super(props)
     
     this.onSubmit = this.onSubmit.bind(this)
+    this.onClearData = this.onClearData.bind(this)
   }
 
   onSubmit() {
     this.props.loading(true)
+    this.props.registerUser('Bob!')
+  }
+
+  onClearData() {
+    this.props.deleteUser()
   }
 
   render() {
@@ -40,6 +51,12 @@ class MainContainer extends Component {
           title="Click"
           color="#841584"
           onPress={this.onSubmit}
+        />
+        <Text style={styles.instructions}>{this.props.user}</Text>
+        <Button
+          title="Clear Data"
+          color="#841584"
+          onPress={this.onClearData}
         />
       </View>
     );
@@ -69,8 +86,17 @@ const mapDispatchToProps = (dispatch) => ({
 
   loading: (value) => {
     dispatch(setLoading(value))
+  },
+  registerUser: (payload) => {
+    dispatch(setUser(payload))
+  },
+  deleteUser: () => {
+    dispatch(deleteUser())
   }
-  
 })
 
-export default connect(null, mapDispatchToProps)(MainContainer)
+const mapStateToProps = (state) => ({
+  user: state.app.user
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(MainContainer)

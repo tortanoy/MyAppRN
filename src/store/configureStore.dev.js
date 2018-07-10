@@ -20,8 +20,6 @@ const configureStore = preloadedState => {
   )
 
   const persistor = persistStore(store)
-
-
   return { store, persistor }
 }
 
