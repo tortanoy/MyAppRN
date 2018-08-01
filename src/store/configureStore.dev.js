@@ -6,13 +6,18 @@ import {
 
 import thunk from 'redux-thunk'
 import rootReducer from '../reducers'
-import { persistStore } from 'redux-persist'
+import { 
+  persistReducer,
+  persistStore
+} from 'redux-persist'
+import persistConfig from './persistConfig'
 
 const configureStore = preloadedState => {
   const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
   const middlewares = [thunk]
+  const persistedReducer = persistReducer(persistConfig, rootReducer)
   const store = createStore(
-    rootReducer,
+    persistedReducer,
     preloadedState,
     composeEnhancers(
       applyMiddleware(...middlewares),
